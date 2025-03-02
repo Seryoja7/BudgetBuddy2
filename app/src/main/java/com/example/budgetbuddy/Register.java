@@ -2,6 +2,7 @@ package com.example.budgetbuddy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -9,12 +10,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,6 +27,9 @@ public class Register extends AppCompatActivity {
     FirebaseAuth mAuth;
     ProgressBar progressBar;
     TextView textView;
+    Handler handler;
+    Runnable verificationChecker;
+    FirebaseUser tempUser;
 
     @Override
     public void onStart() {
@@ -45,83 +45,118 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_register);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
 
         mAuth = FirebaseAuth.getInstance();
-
         editTextEmail = findViewById(R.id.email);
         editTextPassword = findViewById(R.id.password);
         buttonReg = findViewById(R.id.btn_register);
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.loginNow);
 
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Login.class);
-                startActivity(intent);
-                finish();
+        textView.setOnClickListener(v -> {
+            if (tempUser != null && !tempUser.isEmailVerified()) {
+                deleteTempUserAndNavigateToLogin();
+            } else {
+                navigateToLogin();
             }
         });
 
-        buttonReg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                String email, password;
-                email = String.valueOf(editTextEmail.getText()).trim();
-                password = String.valueOf(editTextPassword.getText()).trim();
+        buttonReg.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            String email = String.valueOf(editTextEmail.getText()).trim();
+            String password = String.valueOf(editTextPassword.getText()).trim();
 
-                if (TextUtils.isEmpty(email)) {
-                    Toast.makeText(Register.this, "Enter email", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-                if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
-                    progressBar.setVisibility(View.GONE);
-                    return;
-                }
-
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                progressBar.setVisibility(View.GONE);
-                                if (task.isSuccessful()) {
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    if (user != null) {
-                                        sendEmailVerification(user); // Send verification email
-                                    }
-                                } else {
-                                    Toast.makeText(Register.this, "Authentication failed: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+            if (TextUtils.isEmpty(email)) {
+                Toast.makeText(Register.this, "Մուտքագրեք էլ. փոստի հասցեն", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                return;
             }
+            if (TextUtils.isEmpty(password)) {
+                Toast.makeText(Register.this, "Մուտքագրեք գաղտնաբառը", Toast.LENGTH_SHORT).show();
+                progressBar.setVisibility(View.GONE);
+                return;
+            }
+
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            tempUser = mAuth.getCurrentUser();
+                            if (tempUser != null) {
+                                sendEmailVerification(tempUser);
+                                startEmailVerificationCheck(tempUser);
+                            }
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(Register.this, "Գրանցումը ձախողվեց: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
         });
     }
 
     private void sendEmailVerification(FirebaseUser user) {
         user.sendEmailVerification()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(Register.this, "Verification email sent to " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(Register.this, "Հաստատման էլ. նամակը ուղարկվել է " + user.getEmail(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(Register.this, "Չհաջողվեց ուղարկել հաստատման էլ. նամակը: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    private void startEmailVerificationCheck(FirebaseUser user) {
+        handler = new Handler();
+        verificationChecker = new Runnable() {
+            @Override
+            public void run() {
+                user.reload().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        if (user.isEmailVerified()) {
+                            progressBar.setVisibility(View.GONE);
+                            Toast.makeText(Register.this, "Էլ. փոստը հաստատված է: Դուք կարող եք մուտք գործել", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), Login.class);
                             startActivity(intent);
                             finish();
                         } else {
-                            Toast.makeText(Register.this, "Failed to send verification email: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            handler.postDelayed(this, 5000);
                         }
+                    } else {
+                        progressBar.setVisibility(View.GONE);
+                        Toast.makeText(Register.this, "Չհաջողվեց ստուգել էլ. փոստի հաստատումը: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
+            }
+        };
+        handler.post(verificationChecker);
+    }
+
+    private void deleteTempUserAndNavigateToLogin() {
+        if (tempUser != null) {
+            tempUser.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Toast.makeText(Register.this, "Չհաստատված օգտատերը ջնջվեց", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(Register.this, "Չհաջողվեց ջնջել օգտատիրոջը: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+                navigateToLogin();
+            });
+        } else {
+            navigateToLogin();
+        }
+    }
+
+    private void navigateToLogin() {
+        Intent intent = new Intent(getApplicationContext(), Login.class);
+        startActivity(intent);
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null && verificationChecker != null) {
+            handler.removeCallbacks(verificationChecker);
+        }
     }
 }
