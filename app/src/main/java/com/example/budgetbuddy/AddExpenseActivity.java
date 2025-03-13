@@ -1,14 +1,13 @@
 package com.example.budgetbuddy;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.budgetbuddy.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -17,9 +16,9 @@ import java.util.Map;
 public class AddExpenseActivity extends AppCompatActivity {
 
     private EditText etPrice, etCategory, etDate;
-    private Button btnSaveExpense;
+    private Button btnSaveExpense, btnBack;
     private FirebaseFirestore db;
-    private static final String TAG = "AddExpenseActivity"; // For logging
+    private static final String TAG = "AddExpenseActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +30,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         etCategory = findViewById(R.id.etCategory);
         etDate = findViewById(R.id.etDate);
         btnSaveExpense = findViewById(R.id.btnSaveExpense);
+        btnBack = findViewById(R.id.btnBack); // Initialize the Back button
 
         // Initialize Firestore
         db = FirebaseFirestore.getInstance();
@@ -40,6 +40,14 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         // Save Expense
         btnSaveExpense.setOnClickListener(v -> saveExpense());
+
+        // Back Button
+        btnBack.setOnClickListener(v -> {
+            // Navigate back to MainActivity
+            Intent intent = new Intent(AddExpenseActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish(); // Optional: Close the current activity
+        });
     }
 
     private void showDatePicker() {
@@ -64,22 +72,16 @@ public class AddExpenseActivity extends AppCompatActivity {
         String category = etCategory.getText().toString().trim();
         String date = etDate.getText().toString().trim();
 
-        // Validate input fields
         if (price.isEmpty() || category.isEmpty() || date.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Create a new expense object
         Map<String, Object> expense = new HashMap<>();
         expense.put("price", price);
         expense.put("category", category);
         expense.put("date", date);
 
-        // Log the data being saved
-        Log.d(TAG, "Saving expense: " + expense.toString());
-
-        // Save to Firestore
         db.collection("expenses")
                 .add(expense)
                 .addOnSuccessListener(documentReference -> {

@@ -4,42 +4,31 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
-    <!-- Price -->
+    <!-- Date Picker -->
     <EditText
-        android:id="@+id/etPrice"
+        android:id="@+id/etSelectDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Price"
-        android:inputType="numberDecimal"
-        android:layout_marginBottom="20dp"/>
-
-    <!-- Category -->
-    <EditText
-        android:id="@+id/etCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Category"
-        android:layout_below="@id/etPrice"
-        android:layout_marginBottom="20dp"/>
-
-    <!-- Date -->
-    <EditText
-        android:id="@+id/etDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Date"
+        android:hint="Select Date"
         android:focusable="false"
         android:clickable="true"
-        android:layout_below="@id/etCategory"
         android:layout_marginBottom="20dp"/>
 
-    <!-- Save Expense Button -->
+    <!-- Button to View Expenses -->
     <Button
-        android:id="@+id/btnSaveExpense"
+        android:id="@+id/btnView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save Expense"
-        android:layout_below="@id/etDate"
+        android:text="View Expenses"
+        android:layout_below="@id/etSelectDate"
+        android:layout_marginBottom="20dp"/>
+
+    <!-- RecyclerView to Display Expenses -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvExpenses"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnView"
         android:layout_marginBottom="20dp"/>
 
     <!-- Back Button in Bottom-Right Corner -->

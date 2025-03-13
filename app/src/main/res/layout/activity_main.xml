@@ -4,10 +4,32 @@
     android:layout_height="match_parent"
     android:padding="16dp">
 
+    <!-- Button to add expenses -->
     <Button
         android:id="@+id/btnAddExpense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Add Expense"
-        android:layout_centerInParent="true"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"/>
+
+    <!-- Button to view expenses -->
+    <Button
+        android:id="@+id/btnViewExpenses"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View Expenses"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/btnAddExpense"
+        android:layout_marginTop="20dp"/>
+
+    <!-- Back Button in Bottom-Right Corner -->
+    <Button
+        android:id="@+id/btnBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="16dp"/>
 </RelativeLayout>
