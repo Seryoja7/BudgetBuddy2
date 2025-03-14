@@ -9,4 +9,12 @@
     <string name="click_to_login">Click to login</string>
     <string name="click_to_register">Click to register</string>
     <string name="logout">LOGOUT</string>
+    <string name="expense_title_description">Expense Title/Description</string>
+    <string name="price">Price</string>
+    <string name="enter_custom_category">Enter custom category</string>
+    <string name="enter_custom_payment_method">Enter custom payment method</string>
+    <string name="notes">Notes</string>
+    <string name="date">Date</string>
+    <string name="save_expense">Save Expense</string>
+    <string name="back">Back</string>
 </resources>
