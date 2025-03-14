@@ -26,9 +26,12 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
     @Override
     public void onBindViewHolder(@NonNull ExpenseViewHolder holder, int position) {
         Expense expense = expenseList.get(position);
-        holder.tvPrice.setText("Price: " + expense.getPrice());
-        holder.tvCategory.setText("Category: " + expense.getCategory());
-        holder.tvDate.setText("Date: " + expense.getDate());
+        holder.tvTitle.setText(expense.getTitle());
+        holder.tvPrice.setText(expense.getPrice() + " " + expense.getCurrency());
+        holder.tvCategory.setText(expense.getCategory());
+        holder.tvPaymentMethod.setText(expense.getPaymentMethod());
+        holder.tvNotes.setText(expense.getNotes());
+        holder.tvDate.setText(expense.getDate());
     }
 
     @Override
@@ -36,13 +39,16 @@ public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ExpenseV
         return expenseList.size();
     }
 
-    static class ExpenseViewHolder extends RecyclerView.ViewHolder {
-        TextView tvPrice, tvCategory, tvDate;
+    public static class ExpenseViewHolder extends RecyclerView.ViewHolder {
+        TextView tvTitle, tvPrice, tvCategory, tvPaymentMethod, tvNotes, tvDate;
 
         public ExpenseViewHolder(@NonNull View itemView) {
             super(itemView);
+            tvTitle = itemView.findViewById(R.id.tvTitle);
             tvPrice = itemView.findViewById(R.id.tvPrice);
             tvCategory = itemView.findViewById(R.id.tvCategory);
+            tvPaymentMethod = itemView.findViewById(R.id.tvPaymentMethod);
+            tvNotes = itemView.findViewById(R.id.tvNotes);
             tvDate = itemView.findViewById(R.id.tvDate);
         }
     }
