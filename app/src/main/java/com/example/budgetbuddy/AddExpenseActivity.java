@@ -164,7 +164,6 @@ public class AddExpenseActivity extends AppCompatActivity {
             return;
         }
 
-        // Create a new expense object
         Map<String, Object> expense = new HashMap<>();
         expense.put("price", price);
         expense.put("title", title);
@@ -174,13 +173,12 @@ public class AddExpenseActivity extends AppCompatActivity {
         expense.put("notes", notes);
         expense.put("date", date);
 
-        // Save to Firestore
         db.collection("expenses")
                 .add(expense)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, "Expense saved!", Toast.LENGTH_SHORT).show();
                     Log.d(TAG, "Expense saved with ID: " + documentReference.getId());
-                    finish(); // Close the activity
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error saving expense: " + e.getMessage(), Toast.LENGTH_SHORT).show();

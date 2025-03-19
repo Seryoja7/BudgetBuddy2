@@ -17,4 +17,14 @@
     <string name="date">Date</string>
     <string name="save_expense">Save Expense</string>
     <string name="back">Back</string>
+    <string name="options">Options</string>
+    <string name="view_expenses">View Expenses</string>
+    <string name="add_expense">Add Expense</string>
+    <string name="other">Other</string>
+    <string name="todo">TODO</string>
+    <string name="eat_outside">Eat Outside</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="transport">Transport</string>
+    <string name="food">Food</string>
+    <string name="purchases">Purchases</string>
 </resources>
