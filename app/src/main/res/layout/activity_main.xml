@@ -54,7 +54,8 @@
                 android:background="@drawable/circle_button_light_green"
                 android:scaleType="centerInside"
                 android:padding="20dp"
-                app:tint="@android:color/white" />
+                app:tint="@android:color/white"
+                android:contentDescription="Transport" />
         </LinearLayout>
 
         <LinearLayout
@@ -80,7 +81,8 @@
                 android:background="@drawable/circle_button_light_green"
                 android:scaleType="centerInside"
                 android:padding="20dp"
-                app:tint="@android:color/white" />
+                app:tint="@android:color/white"
+                android:contentDescription="Food" />
         </LinearLayout>
 
         <LinearLayout
@@ -106,7 +108,8 @@
                 android:background="@drawable/circle_button_light_green"
                 android:scaleType="centerInside"
                 android:padding="20dp"
-                app:tint="@android:color/white" />
+                app:tint="@android:color/white"
+                android:contentDescription="Purchases" />
         </LinearLayout>
 
         <LinearLayout
@@ -132,7 +135,8 @@
                 android:background="@drawable/circle_button_light_green"
                 android:scaleType="centerInside"
                 android:padding="20dp"
-                app:tint="@android:color/white" />
+                app:tint="@android:color/white"
+                android:contentDescription="Entertainment" />
         </LinearLayout>
     </LinearLayout>
 
@@ -169,7 +173,8 @@
                 android:background="@drawable/circle_button_light_green"
                 android:scaleType="centerInside"
                 android:padding="20dp"
-                app:tint="@android:color/white" />
+                app:tint="@android:color/white"
+                android:contentDescription="Eat Outside" />
         </LinearLayout>
 
         <LinearLayout
@@ -195,7 +200,8 @@
                 android:background="@drawable/circle_button_light_green"
                 android:scaleType="centerInside"
                 android:padding="20dp"
-                app:tint="@android:color/white" />
+                app:tint="@android:color/white"
+                android:contentDescription="Other" />
         </LinearLayout>
     </LinearLayout>
 

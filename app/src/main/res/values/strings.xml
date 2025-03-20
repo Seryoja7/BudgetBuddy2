@@ -27,4 +27,8 @@
     <string name="transport">Transport</string>
     <string name="food">Food</string>
     <string name="purchases">Purchases</string>
+    <string name="amount">Amount</string>
+    <string name="note">Note</string>
+    <string name="view_activity">View Activity</string>
+    <string name="view_income">View Income</string>
 </resources>

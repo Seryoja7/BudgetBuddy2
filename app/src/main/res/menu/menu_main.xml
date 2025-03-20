@@ -1,8 +1,11 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_item_view_expenses"
-        android:title="View Expenses" />
+        android:id="@+id/action_view_expense"
+        android:title="View Expense"
+        app:showAsAction="never" />
     <item
-        android:id="@+id/menu_item_about"
-        android:title="About" />
+        android:id="@+id/action_view_income"
+        android:title="View Income"
+        app:showAsAction="never" />
 </menu>
