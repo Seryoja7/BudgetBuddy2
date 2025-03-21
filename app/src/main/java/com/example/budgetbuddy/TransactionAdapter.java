@@ -6,10 +6,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
-public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.ViewHolder> {
-    private List<Transaction> transactions;
+public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionViewHolder> {
+    private final List<Transaction> transactions;
 
     public TransactionAdapter(List<Transaction> transactions) {
         this.transactions = transactions;
@@ -17,19 +19,16 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_transaction, parent, false);
-        return new ViewHolder(view);
+        return new TransactionViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
         Transaction transaction = transactions.get(position);
-        holder.tvCategory.setText(transaction.getCategory());
-        holder.tvAmount.setText(String.format("$%.2f", transaction.getAmount()));
-        holder.tvDate.setText(transaction.getDate());
-        holder.tvNote.setText(transaction.getNote().isEmpty() ? "No note" : transaction.getNote());
+        holder.bind(transaction);
     }
 
     @Override
@@ -37,15 +36,26 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return transactions.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView tvCategory, tvAmount, tvDate, tvNote;
+    static class TransactionViewHolder extends RecyclerView.ViewHolder {
+        TextView tvCategory, tvAmount, tvNote, tvDate;
 
-        public ViewHolder(@NonNull View itemView) {
+        public TransactionViewHolder(@NonNull View itemView) {
             super(itemView);
             tvCategory = itemView.findViewById(R.id.tvCategory);
             tvAmount = itemView.findViewById(R.id.tvAmount);
-            tvDate = itemView.findViewById(R.id.tvDate);
             tvNote = itemView.findViewById(R.id.tvNote);
+            tvDate = itemView.findViewById(R.id.tvDate);
+        }
+
+        void bind(Transaction transaction) {
+            tvCategory.setText(transaction.getCategory());
+            tvAmount.setText(String.format(Locale.getDefault(), "₹%.2f", transaction.getAmount()));
+            tvNote.setText(transaction.getNote());
+
+            // Format Firestore Timestamp to readable date
+            SimpleDateFormat sdf = new SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault());
+            String dateString = sdf.format(transaction.getDate().toDate());
+            tvDate.setText(dateString);
         }
     }
 }

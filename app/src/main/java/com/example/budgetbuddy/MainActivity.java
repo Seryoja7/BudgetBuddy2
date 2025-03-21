@@ -18,6 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
@@ -199,20 +201,20 @@ public class MainActivity extends AppCompatActivity {
 
     private void saveToFirestore(String category, String amount, String note, boolean isExpense) {
         String type = isExpense ? "Expense" : "Income";
-        String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
         Map<String, Object> data = new HashMap<>();
         data.put("type", type);
         data.put("category", category);
         data.put("amount", Double.parseDouble(amount));
         data.put("note", note.isEmpty() ? "No note" : note);
-        data.put("date", date);
+        data.put("date", Timestamp.now()); // Changed to Firestore Timestamp
+
         db.collection("transactions")
                 .add(data)
                 .addOnSuccessListener(documentReference -> {
                     Toast.makeText(this, type + " saved!", Toast.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Save failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
