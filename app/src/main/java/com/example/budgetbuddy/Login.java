@@ -43,14 +43,12 @@ public class Login extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         textView = findViewById(R.id.registerNow);
 
-        // Navigate to Register activity
         textView.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), Register.class);
             startActivity(intent);
             finish();
         });
 
-        // Handle login
         buttonLogin.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             String email = editTextEmail.getText().toString();
@@ -67,7 +65,6 @@ public class Login extends AppCompatActivity {
                 return;
             }
 
-            // Authenticate with Firebase
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         progressBar.setVisibility(View.GONE);
@@ -75,7 +72,7 @@ public class Login extends AppCompatActivity {
                             Toast.makeText(getApplicationContext(), "Login Successful", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
-                            finish(); // Close Login activity
+                            finish();
                         } else {
                             Toast.makeText(Login.this, "Authentication failed", Toast.LENGTH_SHORT).show();
                         }
@@ -86,7 +83,6 @@ public class Login extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is already logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             Intent intent = new Intent(this, MainActivity.class);

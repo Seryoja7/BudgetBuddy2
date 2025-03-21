@@ -16,4 +16,17 @@
     <item name="tvCategoryLabel" type="id" />
     <item name="tvPaymentMethodLabel" type="id" />
     <item name="tvPriceLabel" type="id" />
+    <item name="btnAddExpense" type="id" />
+    <item name="categoriesLayout" type="id" />
+    <item name="btnExpense" type="id" />
+    <item name="btnOptions" type="id" />
+    <item name="btnTransport" type="id" />
+    <item name="btnFood" type="id" />
+    <item name="btnPurchases" type="id" />
+    <item name="btnEntertainment" type="id" />
+    <item name="btnEatOutside" type="id" />
+    <item name="btnOther" type="id" />
+    <item name="btnIncome" type="id" />
+    <item name="btn_login" type="id" />
+    <item name="registerNow" type="id" />
 </resources>

@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -269,22 +268,4 @@
                 app:tint="@android:color/white" />
         </LinearLayout>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/btnAddExpense"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Expense"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/categoriesLayout"
-        android:layout_marginTop="200dp"/>
-
-    <Button
-        android:id="@+id/btnBack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Back"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"/>
 </RelativeLayout>

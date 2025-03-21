@@ -4,17 +4,21 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,18 +29,25 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private ImageButton btnExpense, btnIncome;
     private ImageButton btnTransport, btnFood, btnPurchases, btnEntertainment, btnEatOutside, btnOther;
+    private ImageButton btnOptions;
     private float initialXExpense, initialYExpense, initialXIncome, initialYIncome;
     private static final float SNAP_THRESHOLD = 200f;
     private FirebaseFirestore db;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+
         initializeViews();
         setupButtonPositions();
         setTouchListeners();
-        db = FirebaseFirestore.getInstance();
+
+        btnOptions.setOnClickListener(v -> showOptionsDialog());
     }
 
     @Override
@@ -67,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         btnEntertainment = findViewById(R.id.btnEntertainment);
         btnEatOutside = findViewById(R.id.btnEatOutside);
         btnOther = findViewById(R.id.btnOther);
+        btnOptions = findViewById(R.id.btnOptions);
     }
 
     private void setupButtonPositions() {
@@ -227,5 +239,70 @@ public class MainActivity extends AppCompatActivity {
                 etAmount.setText(current.substring(0, current.length() - 1));
             }
         });
+    }
+
+    private void showOptionsDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.setMargins(16, 8, 16, 8);
+
+        Button btnViewExpense = createDialogButton("View Expense", ActivityHistory.class);
+        Button btnViewIncome = createDialogButton("View Income", IncomeHistory.class);
+        Button btnLogout = createLogoutButton();
+
+        layout.addView(btnViewExpense);
+        layout.addView(btnViewIncome);
+        layout.addView(btnLogout);
+
+        builder.setView(layout);
+        AlertDialog dialog = builder.create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setGravity(Gravity.TOP | Gravity.START);
+            WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
+            layoutParams.x = 60;
+            layoutParams.y = 120;
+            dialog.getWindow().setAttributes(layoutParams);
+        }
+
+        btnViewExpense.setTag(dialog);
+        btnViewIncome.setTag(dialog);
+        btnLogout.setTag(dialog);
+        dialog.show();
+    }
+
+    private Button createDialogButton(String text, Class<?> targetActivity) {
+        Button button = new Button(this);
+        button.setText(text);
+        button.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        button.setOnClickListener(v -> {
+            startActivity(new Intent(MainActivity.this, targetActivity));
+            ((AlertDialog) v.getTag()).dismiss();
+        });
+        return button;
+    }
+
+    private Button createLogoutButton() {
+        Button btnLogout = new Button(this);
+        btnLogout.setText("Logout");
+        btnLogout.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        ));
+        btnLogout.setOnClickListener(v -> {
+            mAuth.signOut();
+            startActivity(new Intent(MainActivity.this, Login.class));
+            finishAffinity();
+            ((AlertDialog) v.getTag()).dismiss();
+        });
+        return btnLogout;
     }
 }
